@@ -3,4 +3,5 @@ RL Agents for CartPole problem
 ### Implemented agents  
 - Simple hill climbing  
 - Evolutionary algorithm (cross entropy method)
-- Policy gradient
+- Policy gradient  
+- Actor critic
