@@ -4,4 +4,5 @@ RL Agents for CartPole problem
 - Simple hill climbing  
 - Evolutionary algorithm (cross entropy method)
 - Policy gradient  
-- Actor critic
+- Actor critic  
+- Q learning (uses PyTorch)
