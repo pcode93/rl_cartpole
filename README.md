@@ -5,4 +5,5 @@ RL Agents for CartPole problem
 - Evolutionary algorithm (cross entropy method)
 - Policy gradient  
 - Actor critic  
+- Actor critic (uses PyTorch)  
 - Q learning (uses PyTorch)
