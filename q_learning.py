@@ -29,9 +29,9 @@ class Memory:
         self.terminal = terminal
 
 GAMMA = 0.99
-EPSILON = 0.1
-TARGET_UPDATE_INTERVAL = 10
-BATCH_SIZE = 50
+EPSILON = 1.0
+TARGET_UPDATE_INTERVAL = 100
+BATCH_SIZE = 32
 
 q_func = Net(4, 2, 128)
 target_func = Net(4, 2, 128)
@@ -54,11 +54,15 @@ def select_action(x):
     else:
         return q_func(var(x)).data.max(0)[1].view(1, 1)[0, 0]
 
+step_count = 0
 for i_episode in range(5000):
     observation = env.reset()
 
     for t in range(1000):
-        env.render()
+        if i_episode % 10 == 0:
+            env.render()
+
+        step_count += 1
 
         previous_obs = observation
         action = select_action(observation)
@@ -66,9 +70,9 @@ for i_episode in range(5000):
 
         memories.append(Memory(previous_obs, action, reward, observation, done))
 
-        if done:
-            print(i_episode, t + 1)
+        EPSILON = max(0.1, 1 - step_count / 3000)
 
+        if step_count >= 1000:
             optimizer.zero_grad()
 
             batch = np.random.choice(memories, min(BATCH_SIZE, len(memories)), replace=False)
@@ -80,7 +84,11 @@ for i_episode in range(5000):
                 loss(output, target).backward()
 
             optimizer.step()
-            break
 
-    if i_episode % TARGET_UPDATE_INTERVAL == 0:
-        target_func.load_state_dict(q_func.state_dict())
+            if step_count % TARGET_UPDATE_INTERVAL == 0:
+                target_func.load_state_dict(q_func.state_dict())
+
+        if done:
+            if i_episode % 10 == 0:
+                print(i_episode, t + 1)
+            break
