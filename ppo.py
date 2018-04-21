@@ -34,12 +34,10 @@ optimizer = optim.Adam(model.parameters())
 
 def discount(rewards):
     summed_reward = 0
-    discount = 1
     discounted = [0] * len(rewards)
 
     for i in reversed(range(len(rewards))):
-        summed_reward = summed_reward * discount + rewards[i]
-        discount *= gamma
+        summed_reward = summed_reward * gamma + rewards[i]
         discounted[i] = summed_reward
 
     return discounted
@@ -65,13 +63,13 @@ for i_episode in range(n_epochs):
         probs, value = model(var(observation))
         states.append(observation)
 
-        m = Categorical(probs)
+        m = Categorical(probs.data)
         action = m.sample()
     
-        actions.append(action.data[0])
-        old_probs.append(m.probs[action].data[0])
+        actions.append(action[0])
+        old_probs.append(m.log_prob(action)[0])
 
-        observation, reward, done, info = env.step(action.data[0])
+        observation, reward, done, info = env.step(action[0])
         rewards.append(reward)
         values.append(value.data[0])
           
@@ -95,7 +93,7 @@ for i_episode in range(n_epochs):
                 optimizer.zero_grad()
 
                 probs, values = model(var(states))
-                r = probs[batch, actions] / var(old_probs).squeeze(1)
+                r = torch.exp(torch.log(probs[batch, actions]) - var(old_probs).squeeze(1))
                 A = var(advantages).squeeze(1)
 
                 L_policy = torch.min(r * A, r.clamp(1 - eps, 1 + eps) * A)
