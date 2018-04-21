@@ -99,7 +99,7 @@ for i_episode in range(n_epochs):
                 A = var(advantages).squeeze(1)
 
                 L_policy = torch.min(r * A, r.clamp(1 - eps, 1 + eps) * A)
-                L_value = nn.MSELoss()(values, var(rewards))
+                L_value = (values - var(rewards)) ** 2
                 L_entropy = -((probs * torch.log(probs)).sum(1))
   
                 L = -(L_policy - L_value + 0.01 * L_entropy)
