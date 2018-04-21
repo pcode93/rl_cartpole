@@ -35,14 +35,14 @@ optimizer = optim.Adam(model.parameters())
 def discount(rewards):
     summed_reward = 0
     discount = 1
-    discounted = []
+    discounted = [0] * len(rewards)
 
-    for i, reward in reversed(list(enumerate(rewards))):
-        summed_reward += reward
+    for i in reversed(range(len(rewards))):
+        summed_reward = summed_reward * discount + rewards[i]
         discount *= gamma
-        discounted.append(discount * summed_reward)
+        discounted[i] = summed_reward
 
-    return list(reversed(discounted))
+    return discounted
 
 def var(x):
     return Variable(torch.from_numpy(x).float())
