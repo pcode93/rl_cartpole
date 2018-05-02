@@ -30,16 +30,16 @@ class Memory:
 
 GAMMA = 0.99
 EPSILON = 1.0
-TARGET_UPDATE_INTERVAL = 100
+TARGET_UPDATE_INTERVAL = 1000
 BATCH_SIZE = 32
 
-q_func = Net(4, 2, 128)
-target_func = Net(4, 2, 128)
+q_func = Net(4, 2, 64)
+target_func = Net(4, 2, 64)
 target_func.load_state_dict(q_func.state_dict())
 
-optimizer = optim.RMSprop(q_func.parameters())
+optimizer = optim.Adam(q_func.parameters())
 loss = nn.SmoothL1Loss()
-memories = deque(maxlen=1000)
+memories = deque(maxlen=10000)
 
 env = gym.make('CartPole-v0')
 
@@ -70,9 +70,9 @@ for i_episode in range(5000):
 
         memories.append(Memory(previous_obs, action, reward, observation, done))
 
-        EPSILON = max(0.1, 1 - step_count / 3000)
+        EPSILON = max(0.01, 1 - step_count / 5000)
 
-        if step_count >= 1000:
+        if step_count >= 2500:
             optimizer.zero_grad()
 
             batch = np.random.choice(memories, min(BATCH_SIZE, len(memories)), replace=False)

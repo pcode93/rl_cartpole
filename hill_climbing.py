@@ -6,10 +6,10 @@ env = gym.make('CartPole-v0')
 W_best = np.random.rand(*env.observation_space.shape)
 best_reward = 0
 
-for iteration in range(200):
+for iteration in range(2000):
     observation = env.reset()
     summed_reward = 0
-    W = W_best + (2 * np.random.random() - 1) if best_reward < 200 else W_best
+    W = W_best + 0.1 * np.random.random() if best_reward < 200 else W_best
 
     for t in range(1000):
         env.render()
