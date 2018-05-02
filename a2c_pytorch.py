@@ -76,7 +76,7 @@ for i_episode in range(n_epochs):
             rewards = discount(rewards)
 
             for logp, reward, value in zip(logps, rewards, values):
-                (logp * reward - value.data[0]).backward(retain_graph=True)
+                (logp * (reward - value.data[0])).backward(retain_graph=True)
             
             critic_loss(torch.stack(values), var(np.array(rewards))).backward()
 

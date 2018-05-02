@@ -25,9 +25,9 @@ class Net(nn.Module):
 env = gym.make('CartPole-v0')
 
 n_epochs = 5000
-n_iters = 5
+n_iters = 3
 gamma = 0.99
-eps = 0.2
+eps = 0.1
 
 model = Net(64)
 optimizer = optim.Adam(model.parameters()) 
