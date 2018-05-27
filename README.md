@@ -1,6 +1,6 @@
-# rl_cartpole
-RL Agents for the CartPole problem
-### Implemented agents  
+# Cartpole RL
+Reinforcement Learning Agents for the CartPole problem
+### Implemented Agents  
 - Simple hill climbing  
 - Cross entropy method  
 - Policy gradients  
