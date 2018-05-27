@@ -3,7 +3,7 @@ RL Agents for the CartPole problem
 ### Implemented agents  
 - Simple hill climbing  
 - Cross entropy method  
-- Policy gradient  
+- Policy gradients  
 - Actor critic  
 - Q learning  
 - PPO
