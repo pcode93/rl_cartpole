@@ -7,6 +7,7 @@ from torch.autograd import Variable
 from torch.distributions import Categorical
 import numpy as np
 import gym
+from collections import deque
 
 class Net(nn.Module):
     def __init__(self, n_hidden):
@@ -22,7 +23,7 @@ class Net(nn.Module):
 
 env = gym.make('CartPole-v0')
 
-n_epochs = 5000
+n_epochs = 250
 n_iters = 10000
 gamma = 0.99
 
@@ -45,6 +46,9 @@ def discount(rewards):
 
 def var(x):
     return Variable(torch.from_numpy(x).float())
+
+total_rewards = deque(maxlen=25)
+average_rewards = []
 
 for i_episode in range(n_epochs):
     rewards = []
@@ -70,9 +74,12 @@ for i_episode in range(n_epochs):
         rewards.append(reward)
           
         if done:
+            total_rewards.append(sum(rewards))
+            average_rewards.append(np.mean(total_rewards))
+
             if i_episode % 10 == 0:
-                print(i_episode, t + 1)
-        
+                print(np.mean(total_rewards))
+
             rewards = discount(rewards)
 
             for logp, reward, value in zip(logps, rewards, values):

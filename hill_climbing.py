@@ -1,15 +1,18 @@
 import gym
 import numpy as np
+from collections import deque
 
 env = gym.make('CartPole-v0')
+total_rewards = deque(maxlen=25)
+average_rewards = []
 
 W_best = np.random.rand(*env.observation_space.shape)
 best_reward = 0
 
-for iteration in range(2000):
+for iteration in range(250):
     observation = env.reset()
     summed_reward = 0
-    W = W_best + 0.1 * np.random.random() if best_reward < 200 else W_best
+    W = W_best + 0.01 * (200 - best_reward) * np.random.random()
 
     for t in range(1000):
         env.render()
@@ -19,9 +22,14 @@ for iteration in range(2000):
         summed_reward += reward
 
         if done:
+            total_rewards.append(summed_reward)
+            average_rewards.append(np.mean(total_rewards))
+
+            if iteration % 10 == 0:
+                print(np.mean(total_rewards))
+
             if summed_reward > best_reward:
                 best_reward = summed_reward
                 W_best = W
 
-            print(iteration + 1, summed_reward + 1)
             break
